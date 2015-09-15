@@ -1,6 +1,6 @@
 #!usr/bin/python
 
-import serial,os,time
+import serial, os,time
 import sys
 import MySQLdb
 import datetime
