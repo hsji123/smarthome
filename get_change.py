@@ -46,9 +46,9 @@ def gradient_():
         if len(dates[1])<before30 :
             break
         if (dates[1][i].minute - dates[1][before30].minute) > 0:
-                result[2].append(float((result[1][i] - result[1][before30])) / 30)
+                result[2].append(float((result[1][i] - result[1][before30])) / 20)
         elif (dates[1][i].minute - dates[1][before30].minute) < 0:
-                result[2].append(float((result[1][i] - result[1][before30])) / 30)
+                result[2].append(float((result[1][i] - result[1][before30])) / 20)
         elif (i != after30) and (dates[1][i].minute - dates[1][before30].minute == 0):
                 result[2].append(float(result[2][i - after30 - 1]))  # result[4][i-n-1]
         else:
