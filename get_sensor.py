@@ -15,7 +15,7 @@ cursor = db.cursor()
 print "successfully connect"
 
 while 1:
-    data = ser.read(28)
+    data = ser.read(38)
     print data
     temp = 0
     humi = 0

@@ -63,7 +63,8 @@ while 1:
     weather = getweather(getDataPage())
     temperature = gettemperature(getDataPage())
     humidity = gethumidity(getDataPage())
-    finedust = getdust(getDataPage2())
+    #finedust = getdust(getDataPage2())
+    finedust=0
     pnt3 = ""
     """
     for i in pnt2:
