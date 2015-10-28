@@ -10,6 +10,7 @@ from datetime import timedelta
 power=[6800,2950 ,600 ,450 ,550 ,450, 550 ,1350, 600 ,1350, 550 ,450 ,550 ,500 ,550 ,450,550 ,500, 550 ,500 ,550 ,450, 550 ,450, 550 ,1400 ,550 ,1350, 550 ,500 ,550 ,450 ,550 ,500 ,550 ,500,550 ,450 ,550 ,1350, 550 ,1400, 550,450, 550 ,1400 ,550 ,500 ,550 ,450 ,600];
 humi=0
 act=0
+row_h=[]
 def sensing() :
     global humi
     ser.write("sensor")
@@ -57,12 +58,13 @@ def sensing() :
     if co2>=1500 :
         print 'on!!!'
     now = time.localtime()
-    if count>6 :
+    if count>4 :
         sql = "insert into Pure_data (nodeid, Temperature, Humidity, Co2, regdate) values (1, %.1f, %.1f, %d, now()+ interval 9 hour )" % (temp, humi, co2)
         cursor.execute(sql)
         db.commit()
 
     time.sleep(3)
+
 def api() :
     def getWebpage(url, referer=''):
         debug = 0
@@ -180,7 +182,7 @@ def change() :
 
     def afbe_():
         global after30, before30, aver10
-        td1 = timedelta(minutes=20)
+        td1 = timedelta(minutes=10)
         td2 = row_h[0][0][1] + td1
         for j in range(0, len(row_h[0])):
                 if td2 > row_h[0][j][1]:
@@ -340,10 +342,13 @@ while 1:
     sensing()
     if humi>=50 and act==0:
         remote()
-        act=1;
+        act=count;
     if count%10==0 and count is not 0 :
-        api()
-    #if count>300 and count is not 0 :
+        print 1
+        #api()
+    if act<count+20 :
+        act=0
+    #if count>100 and count%2 is not 0 :
     #    change()
 ser.close()
 

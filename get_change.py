@@ -17,7 +17,7 @@ def typevalue_():
 
 def afbe_():
     global after30, before30, aver10
-    td1 = timedelta(minutes=20)
+    td1 = timedelta(minutes=10)
     td2 = row_h[0][0][1] + td1
     for j in range(0, len(row_h[0])):
             if td2 > row_h[0][j][1]:
