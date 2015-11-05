@@ -30,14 +30,18 @@ while 1:
         conn.request("PUT", "/api/newdeveloper/lights/1/state", value)
         responses = conn.getresponse()
         data = responses.read()
+        value='{"on":true}'
+        conn.request("PUT", "/api/newdeveloper/lights/2/state", value)
+        responses = conn.getresponse()
+        data = responses.read()
         occ_confirm=1
         print "occupant on"
     	time.sleep(5)
-        value='{"on" : false}'
+        value='{"on":true, "sat":130, "bri":255, "hue":14000}'
         conn.request("PUT", "/api/newdeveloper/lights/1/state", value)
         responses = conn.getresponse()
         data = responses.read()
-        print "off"
+        print "init"
         time.sleep(3)
 
     elif row_c[3]==0 and occ_confirm==1:
@@ -59,7 +63,7 @@ while 1:
         print "wake up"
         for count in range(0,255) :
             value='{"on":true, "sat":255, "bri": %d, "hue": 20000}' % (count)
-            conn.request("PUT", "/api/newdeveloper/lights/1/state", value)
+            conn.request("PUT", "2", value)
             responses = conn.getresponse()
             data = responses.read()
             time.sleep(0.2)
@@ -101,10 +105,15 @@ while 1:
         conn.request("PUT", "/api/newdeveloper/lights/1/state", value)
         responses = conn.getresponse()
         data = responses.read()
-        print "off"
+        print "alarm off"
+        value='{"on":true, "sat":130, "bri":255, "hue":14000}'
+        conn.request("PUT", "/api/newdeveloper/lights/1/state", value)
+        responses = conn.getresponse()
+        data = responses.read()
+        print "init"
         time.sleep(3)
 
-    if row[6].time().minute%15==0 :
+    if row[6].time().minute%5==0 :
         if row[2]> 1000 :
             value='{"on":true, "sat":255, "bri": 255, "hue": 25500}'
             conn.request("PUT", "/api/newdeveloper/lights/1/state", value)
@@ -112,7 +121,7 @@ while 1:
             data = responses.read()
             print "co2"
             time.sleep(3)
-        if row[3] > 26:
+        if row[3] >= 25:
             value='{"on":true, "sat":255, "bri": 255, "hue": 65280}'
             conn.request("PUT", "/api/newdeveloper/lights/1/state", value)
             responses = conn.getresponse()
@@ -126,11 +135,11 @@ while 1:
             data = responses.read()
             print "humidity"
             time.sleep(3)
-        value='{"on" : false}'
+        value='{"on":true, "sat":130, "bri":255, "hue":14000}'
         conn.request("PUT", "/api/newdeveloper/lights/1/state", value)
         responses = conn.getresponse()
         data = responses.read()
-        print "off"
+        print "init"
         time.sleep(3)
     
     """

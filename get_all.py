@@ -10,7 +10,17 @@ from datetime import timedelta
 power=[6800,2950 ,600 ,450 ,550 ,450, 550 ,1350, 600 ,1350, 550 ,450 ,550 ,500 ,550 ,450,550 ,500, 550 ,500 ,550 ,450, 550 ,450, 550 ,1400 ,550 ,1350, 550 ,500 ,550 ,450 ,550 ,500 ,550 ,500,550 ,450 ,550 ,1350, 550 ,1400, 550,450, 550 ,1400 ,550 ,500 ,550 ,450 ,600];
 humi=0
 act=0
-row_h=[]
+
+result = [[], [], [], [], [], [], []]
+dates = [[], [], [], [], [], [], []]
+x = [[], [], [], [], [], [], []]
+row_h, datetime_ = [], []
+after30 = before30 = aver10 = 0
+co2min = 2000
+stand_gradient = 0.5
+stand_co2 = 100
+confirm_co2=0
+
 def sensing() :
     global humi
     ser.write("sensor")
@@ -192,19 +202,19 @@ def change() :
             if td3 > row_h[0][k][1]:
                 before30 = before30 + 1
 
-
     def co2_():
-        global co2min
+        global co2min, dates, result
         for i in range(0, len(row_h[0])):
             dates[1].append(row_h[0][i][1])
         for i in range(0, len(row_h[0])):
             result[1].append(row_h[0][i][0])
             if co2min > row_h[0][i][0]:
-                    co2min = row_h[0][i][0]
-
+                co2min = row_h[0][i][0]
+                if(co2min<=350):
+                    co2min=350
 
     def gradient_():
-        global after30, before30
+        global after30, before30, dates, result
         for i in range(after30, len(dates[1])):
             dates[2].append(dates[1][i])
         for i in range(after30, len(dates[1])):
@@ -220,16 +230,16 @@ def change() :
                 result[2].append(0)
             before30 = before30 + 1
 
-
     def co2init_():
+        global result, dates
         for i in range(0, len(dates[1])):
             dates[3].append(dates[1][i])
         for i in range(0, len(result[1])):
             result[3].append(result[1][i] - co2min)
 
-
     def absence_(stand_gradient, stand_co2):
-        global after30, before30
+        global after30, before30, result, dates
+
         for i in range(0, len(dates[2])):
             dates[4].append(dates[2][i])
         for i in range(0, len(dates[2])):
@@ -270,8 +280,7 @@ def change() :
             else :
                 result[4].append(0)
 
-
-
+    global result, dates, x, row_h, datetime, after30, before30, aver10, co2min, stand_co2, stand_gradient, confirm_co2, act
     sql ="select nodeid, temperature, humidity, regdate  from Pure_data order by regdate desc limit 1;"
     cursor.execute(sql)
     row=cursor.fetchone()
@@ -283,20 +292,29 @@ def change() :
     after30 = before30 = aver10 = 0
     co2min = 2000
     stand_gradient = 0.5
-    stand_co2 = 100
+    stand_co2 = 0
 
     row_h = typevalue_()
     co2_()
+    print "co2 = "+str(result[1][-1])
+    print "Co2min = "+str(co2min)
     afbe_()
     gradient_()
+    print "gradient = "+str(result[2][-1])
     co2init_()
+    print "init = "+str(result[3][-1])
     absence_(stand_gradient, stand_co2)
     print "human : "+str(result[4][-1])
+    if result[4][-1]>=1:
+        confirm_co2=1
+    elif confirm_co2==1 and result[4][-1]==0 :
+        remote()
+        act=count;
 
     regdate_temp=row[3]
     comfort=9/5*row[1]-(0.55)*(1-row[2]/100)*(9/5*row[1]-26)+32
-    if(row[1]-26<0) :
-        energy=(row[1]-26)*(-7)
+    if(row[1]-22>0) :
+        energy=(row[1]-22)*(7)
     else :
         energy=0
     print "comfort : " + str(comfort)
@@ -342,13 +360,13 @@ while 1:
     sensing()
     if humi>=50 and act==0:
         remote()
-        act=count;
+        act=count
     if count%10==0 and count is not 0 :
         print 1
-        #api()
+        api()
     if act<count+20 :
         act=0
-    #if count>100 and count%2 is not 0 :
-    #    change()
+    if count%2 is not 0 :
+        change()
 ser.close()
 

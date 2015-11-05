@@ -17,7 +17,7 @@ def typevalue_():
 
 def afbe_():
     global after30, before30, aver10
-    td1 = timedelta(minutes=10)
+    td1 = timedelta(minutes=20)
     td2 = row_h[0][0][1] + td1
     for j in range(0, len(row_h[0])):
             if td2 > row_h[0][j][1]:
@@ -110,7 +110,7 @@ dates = [[], [], [], [], [], [], []]
 x = [[], [], [], [], [], [], []]
 row_h, datetime_ = [], []
 after30 = before30 = aver10 = 0
-co2min = 700
+co2min = 2000
 stand_gradient = 0.5
 stand_co2 = 100
 
